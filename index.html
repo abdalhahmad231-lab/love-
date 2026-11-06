@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سرّ صغير لقلب كبير</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0d1030; --bg2:#1b1040; --bg3:#2a1244;
+    --rose:#e8b4a6; --rose-2:#f4d3c8; --gold:#d9a77c;
+    --ink:#f6ece8; --muted:#b9aac4;
+    --glass:rgba(255,255,255,.06); --line:rgba(232,180,166,.35);
+    --serif:'Amiri','Times New Roman',serif;
+    --sans:'Tajawal',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);color:var(--ink);line-height:1.9;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));
+    background-attachment:fixed;min-height:100vh;overflow-x:hidden;
+  }
+  #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  #fx{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
+  main{position:relative;z-index:1}
+  section{min-height:100vh;padding:clamp(3rem,8vw,6rem) 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  section.hidden{display:none}
+  h1,h2{font-family:var(--serif);font-weight:700;color:var(--rose-2);text-align:center}
+  h1{font-size:clamp(2.4rem,8vw,4.6rem);line-height:1.35;text-shadow:0 0 40px rgba(232,180,166,.35)}
+  h2{font-size:clamp(1.8rem,5vw,2.8rem);margin-bottom:2.5rem}
+  .sub{color:var(--muted);font-size:clamp(1rem,3vw,1.25rem);margin:1rem 0 2.5rem;text-align:center;max-width:32rem}
+
+  .btn{
+    font-family:var(--sans);font-size:1.15rem;font-weight:500;cursor:pointer;
+    padding:.9rem 2.2rem;border-radius:999px;border:1px solid var(--rose);
+    color:#2a1230;background:linear-gradient(135deg,var(--rose-2),var(--gold));
+    box-shadow:0 8px 30px rgba(217,167,124,.3);transition:transform .25s,box-shadow .25s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(217,167,124,.45)}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .btn.ghost{background:transparent;color:var(--rose-2);box-shadow:none}
+  .pulse{animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 14px rgba(232,180,166,0)}0%{box-shadow:0 0 0 0 rgba(232,180,166,.5)}}
+
+  /* Counter */
+  .counter{width:100%;max-width:40rem;margin:-1rem 0 3rem;text-align:center}
+  .counter p{font-family:var(--serif);font-size:clamp(1.2rem,3.5vw,1.6rem);color:var(--gold);margin-bottom:1rem}
+  .units{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+  .unit{padding:.9rem .3rem;background:var(--glass);border:1px solid var(--line);border-radius:1rem;backdrop-filter:blur(8px)}
+  .unit b{display:block;font-family:var(--serif);font-size:clamp(1.8rem,7vw,3rem);line-height:1.2;color:var(--rose-2);font-variant-numeric:tabular-nums}
+  .unit span{font-size:clamp(.85rem,2.6vw,1rem);color:var(--muted)}
+
+  /* Timeline */
+  .timeline{position:relative;width:100%;max-width:44rem;padding-inline-start:2.2rem}
+  .timeline::before{content:"";position:absolute;inset-block:0;inset-inline-start:.55rem;width:2px;background:linear-gradient(var(--rose),transparent)}
+  .stop{position:relative;margin-bottom:2rem;padding:1.2rem 1.4rem;background:var(--glass);
+    border:1px solid var(--line);border-radius:1.1rem;backdrop-filter:blur(8px);
+    opacity:0;transform:translateX(30px);transition:opacity .7s,transform .7s}
+  .stop.in{opacity:1;transform:none}
+  .stop::before{content:"♥";position:absolute;inset-inline-start:-2.2rem;top:1.1rem;width:1.2rem;height:1.2rem;
+    display:grid;place-items:center;font-size:.9rem;color:var(--rose);background:var(--bg2);border-radius:50%}
+  .stop time{font-family:var(--serif);color:var(--gold);font-size:1.1rem}
+  .stop h3{font-family:var(--serif);font-size:1.5rem;color:var(--rose-2);margin:.1rem 0 .3rem}
+  .stop p{color:var(--ink);opacity:.88}
+
+  /* Letter */
+  .letter{max-width:38rem;width:100%;padding:clamp(1.6rem,5vw,3rem);border:1px solid var(--line);border-radius:1.4rem;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));backdrop-filter:blur(10px);
+    font-family:var(--serif);font-size:clamp(1.25rem,3.6vw,1.6rem);line-height:2.2}
+  .letter p{margin-bottom:1.3rem;opacity:0;transform:translateY(14px);transition:opacity .9s,transform .9s}
+  .letter p.in{opacity:1;transform:none}
+  .letter .sign{text-align:start;color:var(--gold);margin:0}
+
+  /* Question */
+  #ask{text-align:center}
+  #ask h2{margin-bottom:1rem}
+  .answers{display:flex;gap:1.2rem;align-items:center;justify-content:center;flex-wrap:wrap;min-height:9rem;margin-top:1.5rem}
+  #yes{transition:transform .25s;transform-origin:center}
+  #no{position:relative}
+  #no.run{position:fixed;z-index:20;transition:left .25s,top .25s}
+  #hint{min-height:1.8rem;color:var(--muted)}
+  #final .sub{font-family:var(--serif);font-size:clamp(1.4rem,4vw,2rem);color:var(--rose-2);max-width:36rem}
+
+  /* Floating hearts from click */
+  .heart{position:fixed;z-index:60;pointer-events:none;color:var(--rose);animation:rise 2.4s ease-out forwards}
+  @keyframes rise{to{transform:translateY(-60vh) scale(1.6) rotate(var(--r));opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+    .stop,.letter p{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main>
+  <!-- 1. Landing -->
+  <section id="landing">
+    <h1 id="title"></h1>
+    <p class="sub" id="lead"></p>
+    <button class="btn pulse" id="open" type="button"></button>
+  </section>
+
+  <!-- 2. Timeline -->
+  <section id="story" class="hidden">
+    <h2>حكايتنا</h2>
+    <div class="counter" role="timer" aria-live="off">
+      <p id="counterLabel"></p>
+      <div class="units">
+        <div class="unit"><b id="cDays">0</b><span>يوم</span></div>
+        <div class="unit"><b id="cHours">0</b><span>ساعة</span></div>
+        <div class="unit"><b id="cMins">0</b><span>دقيقة</span></div>
+        <div class="unit"><b id="cSecs">0</b><span>ثانية</span></div>
+      </div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <button class="btn ghost" id="toLetter" type="button">كمّلي...</button>
+  </section>
+
+  <!-- 3. Letter -->
+  <section id="letterSec" class="hidden">
+    <h2>رسالة ليكي</h2>
+    <article class="letter" id="letter"></article>
+    <button class="btn ghost" id="toAsk" type="button" style="margin-top:2rem">عندي سؤال أخير</button>
+  </section>
+
+  <!-- 4. Question -->
+  <section id="ask" class="hidden">
+    <h2 id="question"></h2>
+    <p id="hint" aria-live="polite"></p>
+    <div class="answers" id="answers">
+      <button class="btn" id="yes" type="button">نعم 💖</button>
+      <button class="btn ghost" id="no" type="button">لأ</button>
+    </div>
+  </section>
+
+  <!-- 5. Final -->
+  <section id="final" class="hidden">
+    <h1>شكراً إنك قلتي نعم 🌹</h1>
+    <p class="sub" id="finalText"></p>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ============ ✏️ عدّل هنا بس ============ */
+  const CONFIG = {
+    name: 'يا غالية',
+    // 30 سبتمبر 2026 الساعة 11 صباحاً بتوقيت القاهرة (+03:00 صيفي)
+    startDate: '2026-09-30T11:00:00+03:00',
+    counterLabel: 'من اللحظة اللي حياتي اتغيّرت فيها، عدّى...',
+    counterLabelFuture: 'فاضل على اللحظة المنتظرة...',
+    title: 'عندي سرّ صغير... وعايزك تعرفيه',
+    lead: 'حاجة بسيطة كتبتها من قلبي، مخصوص ليكي.',
+    openText: 'اضغطي هنا عشان تشوفي السر',
+    memories: [
+      { date: 'أول مرة', title: 'أول لقاء', text: 'مكنتش أعرف إن يوم عادي هيبقى بداية حاجة حلوة أوي كده.' },
+      { date: 'بعدها بشوية', title: 'أول ضحكة مشتركة', text: 'ساعتها حسّيت إن في حد قريب من قلبي من غير ما أفهم ليه.' },
+      { date: 'لحظة مميزة', title: 'اليوم اللي مش هنساه', text: 'كان فيه كلام قليل وإحساس كبير، ومن يومها وأنا بحمد ربنا عليكي.' },
+      { date: 'النهارده', title: 'وإحنا هنا', text: 'كل يوم بيعدّي بيأكدلي إنك أحلى حاجة حصلتلي.' }
+    ],
+    letter: [
+      'عارف إن الكلام مش دايماً بيطلع زي ما القلب عايز، بس هحاول.',
+      'وجودك في حياتي غيّر معنى الأيام. بقيت أستنى الصبح عشان أسمع صوتك، وأحب الليل عشان بيفكّرني بيكي.',
+      'أنتِ الأمان اللي كنت بدوّر عليه، والضحكة اللي بتصلّح يومي مهما كان تقيل.',
+      'أنا مش بوعدك بحياة من غير تعب، بس بوعدك إنك عمرك ما هتمشي فيها لوحدك.'
+    ],
+    signature: 'بحبك. — من اللي قلبه ليكي',
+    question: 'موافقة تكملي معايا؟',
+    noMessages: ['فكّري تاني 😏', 'مش هتعرفي تضغطي عليا!', 'إيدك بطيئة 🐢', 'الزرار التاني أحلى والله', 'كفاية عِند بقى 💕', 'طب جربي تاني!'],
+    finalText: 'كنت عارف. أنتِ أحلى قرار خدته في حياتي. 💖'
+  };
+  /* ======================================== */
+
+  const $ = (id) => document.getElementById(id);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const show = (id) => { const s = $(id); s.classList.remove('hidden'); s.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); };
+
+  /* ----- Fill content ----- */
+  $('title').textContent = CONFIG.title;
+  $('lead').textContent = CONFIG.lead;
+  $('open').textContent = CONFIG.openText;
+  $('question').textContent = CONFIG.question;
+  $('finalText').textContent = CONFIG.finalText;
+
+  $('timeline').innerHTML = CONFIG.memories.map(m =>
+    `<div class="stop"><time>${m.date}</time><h3>${m.title}</h3><p>${m.text}</p></div>`).join('');
+  $('letter').innerHTML = CONFIG.letter.map(t => `<p>${t}</p>`).join('') +
+    `<p class="sign">${CONFIG.signature}</p>`;
+
+  /* ----- Reveal on scroll ----- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .3 });
+  const observeAll = (sel) => document.querySelectorAll(sel).forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.12) + 's'; io.observe(el);
+  });
+
+  /* ----- Starry background + drifting hearts ----- */
+  const sky = $('sky'), sctx = sky.getContext('2d');
+  let W, H, stars = [], hearts = [];
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    [sky, fx].forEach(c => { c.width = W * dpr; c.height = H * dpr; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); });
+    const n = Math.round(W * H / 9000);
+    stars = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.4 + .3, p: Math.random() * 6.28, s: Math.random() * .02 + .005 }));
+    hearts = Array.from({ length: W < 600 ? 7 : 14 }, () => newHeart(true));
+  };
+  const newHeart = (anywhere) => ({ x: Math.random() * W, y: anywhere ? Math.random() * H : H + 30, size: Math.random() * 12 + 10, v: Math.random() * .4 + .15, o: Math.random() * .25 + .08, d: Math.random() * 6.28 });
+  const fx = $('fx'), fctx = fx.getContext('2d');
+
+  const drawSky = () => {
+    sctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.p += s.s;
+      sctx.globalAlpha = .35 + Math.sin(s.p) * .35;
+      sctx.fillStyle = '#fff';
+      sctx.beginPath(); sctx.arc(s.x, s.y, s.r, 0, 6.28); sctx.fill();
+    });
+    hearts.forEach((h, i) => {
+      h.y -= h.v; h.d += .01;
+      sctx.globalAlpha = h.o; sctx.fillStyle = '#e8b4a6';
+      sctx.font = h.size + 'px serif';
+      sctx.fillText('♥', h.x + Math.sin(h.d) * 14, h.y);
+      if (h.y < -30) hearts[i] = newHeart(false);
+    });
+    sctx.globalAlpha = 1;
+  };
+
+  /* ----- Confetti ----- */
+  let parts = [], raf = null;
+  const burst = (x, y, count = 120) => {
+    const colors = ['#e8b4a6', '#f4d3c8', '#d9a77c', '#ff8fab', '#c9a7ff', '#ffffff'];
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * 6.28, v = Math.random() * 9 + 3;
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, g: .22, life: 1, size: Math.random() * 10 + 6,
+        c: colors[(Math.random() * colors.length) | 0], heart: Math.random() < .45, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .3 });
+    }
+    if (!raf) loop();
+  };
+  const loop = () => {
+    fctx.clearRect(0, 0, W, H);
+    parts = parts.filter(p => p.life > 0 && p.y < H + 40);
+    parts.forEach(p => {
+      p.vy += p.g; p.x += p.vx; p.y += p.vy; p.vx *= .99; p.rot += p.vr; p.life -= .006;
+      fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.rot);
+      fctx.globalAlpha = Math.max(p.life, 0); fctx.fillStyle = p.c;
+      if (p.heart) { fctx.font = p.size * 1.6 + 'px serif'; fctx.textAlign = 'center'; fctx.fillText('♥', 0, 0); }
+      else fctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      fctx.restore();
+    });
+    raf = parts.length ? requestAnimationFrame(loop) : null;
+    if (!raf) fctx.clearRect(0, 0, W, H);
+  };
+
+  /* ----- Floating hearts on click ----- */
+  document.addEventListener('pointerdown', (e) => {
+    if (reduceMotion) return;
+    for (let i = 0; i < 3; i++) {
+      const h = document.createElement('span');
+      h.className = 'heart'; h.textContent = '♥';
+      h.style.left = (e.clientX + (Math.random() - .5) * 40) + 'px';
+      h.style.top = e.clientY + 'px';
+      h.style.fontSize = (14 + Math.random() * 16) + 'px';
+      h.style.setProperty('--r', ((Math.random() - .5) * 60) + 'deg');
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 2400);
+    }
+  });
+
+  /* ----- Live counter ----- */
+  const startMs = new Date(CONFIG.startDate).getTime();
+  const cEls = { d: $('cDays'), h: $('cHours'), m: $('cMins'), s: $('cSecs') };
+  const pad = (n) => String(n).padStart(2, '0');
+  const tick = () => {
+    const diff = Date.now() - startMs;
+    $('counterLabel').textContent = diff >= 0 ? CONFIG.counterLabel : CONFIG.counterLabelFuture;
+    const t = Math.floor(Math.abs(diff) / 1000);
+    cEls.d.textContent = Math.floor(t / 86400);
+    cEls.h.textContent = pad(Math.floor(t % 86400 / 3600));
+    cEls.m.textContent = pad(Math.floor(t % 3600 / 60));
+    cEls.s.textContent = pad(t % 60);
+  };
+  tick();
+  setInterval(tick, 1000);
+
+  /* ----- Flow ----- */
+  $('open').addEventListener('click', (e) => {
+    burst(e.clientX, e.clientY, 60);
+    show('story'); observeAll('.stop');
+  });
+  $('toLetter').addEventListener('click', () => { show('letterSec'); observeAll('.letter p'); });
+  $('toAsk').addEventListener('click', () => show('ask'));
+
+  /* ----- Playful "No" button ----- */
+  const yes = $('yes'), no = $('no'), hint = $('hint');
+  let tries = 0, scale = 1;
+  const dodge = (e) => {
+    e.preventDefault();
+    tries++;
+    scale = Math.min(scale + .35, 6);
+    yes.style.transform = `scale(${scale})`;
+    hint.textContent = CONFIG.noMessages[(tries - 1) % CONFIG.noMessages.length];
+    no.classList.add('run');
+    const r = no.getBoundingClientRect(), m = 12;
+    const maxX = innerWidth - r.width - m, maxY = innerHeight - r.height - m;
+    no.style.left = (m + Math.random() * Math.max(maxX - m, 0)) + 'px';
+    no.style.top = (m + Math.random() * Math.max(maxY - m, 0)) + 'px';
+  };
+  ['pointerenter', 'touchstart', 'click', 'focus'].forEach(ev => no.addEventListener(ev, dodge, { passive: false }));
+
+  yes.addEventListener('click', () => {
+    no.style.display = 'none';
+    const r = yes.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2, 160);
+    setTimeout(() => { show('final'); burst(innerWidth / 2, innerHeight / 3, 200); }, 700);
+    const rain = setInterval(() => burst(Math.random() * innerWidth, -10, 25), 600);
+    setTimeout(() => clearInterval(rain), 6000);
+  });
+
+  addEventListener('resize', resize);
+  resize();
+  (function anim() { drawSky(); requestAnimationFrame(anim); })();
+})();
+</script>
+</body>
+</html>
